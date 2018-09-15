@@ -1,6 +1,7 @@
+#include <sourcemod>
 #include <tf2_stocks>
 
-int g_iClass;
+TFClassType g_warClass;
 
 public Plugin myinfo = 
 {
@@ -20,7 +21,7 @@ public void OnPluginStart()
 
 public Action Event_RoundStart(Handle hEvent, const char[] sEventName, bool bDontBroadcast) 
 {
-	g_iClass = GetRandomInt(1, 9);
+	g_warClass = view_as<TFClassType>(GetRandomInt(1, 9));
 }
 
 public Action Event_RoundActuallyStart(Handle hEvent, const char[] sEventName, bool bDontBroadcast) 
@@ -29,9 +30,9 @@ public Action Event_RoundActuallyStart(Handle hEvent, const char[] sEventName, b
 	{
 		if (IsValidClient(iClient))
 		{
-			if (GetClientTeam(iClient) == view_as<int>(TFTeam_Red))
+			if (TF2_GetClientTeam(iClient) == TFTeam_Red)
 			{
-				if (IsClientInGame(iClient)) PrintModMessage(iClient);
+				PrintModMessage(iClient);
 				VerifySelection(iClient);
 			}
 		}
@@ -50,18 +51,18 @@ void PrintModMessage(int iClient)
 	{
 		char sClass[20];
 		
-		switch (g_iClass)
+		switch (g_warClass)
 		{
-			case 1: 	sClass = "Scout";
-			case 2:		sClass = "Soldier";
-			case 3:		sClass = "Pyro";
-			case 4:		sClass = "Demoman";
-			case 5:		sClass = "Heavy";
-			case 6:		sClass = "Engineer";
-			case 7:		sClass = "Medic";
-			case 8:		sClass = "Sniper";
-			case 9:		sClass = "Spy";
-			default:	sClass = "Scout";
+			case TFClass_Scout: 		sClass = "Scout";
+			case TFClass_Soldier:		sClass = "Soldier";
+			case TFClass_Pyro:			sClass = "Pyro";
+			case TFClass_DemoMan:		sClass = "Demoman";
+			case TFClass_Heavy:			sClass = "Heavy";
+			case TFClass_Engineer:		sClass = "Engineer";
+			case TFClass_Medic:			sClass = "Medic";
+			case TFClass_Sniper:		sClass = "Sniper";
+			case TFClass_Spy:			sClass = "Spy";
+			default:					sClass = "Unknown";
 		}
 		
 		PrintCenterText(iClient, "This is Class Warfare. It is %s this round.", sClass);
@@ -74,38 +75,11 @@ void VerifySelection(int client)
 	{
 		if (GetClientTeam(client) == view_as<int>(TFTeam_Red))
 		{
-			int iClass;
-			TFClassType TFClass = TF2_GetPlayerClass(client);
+			TFClassType clientClass = TF2_GetPlayerClass(client);
 			
-			switch (TFClass)
+			if (clientClass != g_warClass)
 			{
-				case TFClass_Scout:  	iClass = 1;
-				case TFClass_Soldier:	iClass = 2;
-				case TFClass_Pyro:		iClass = 3;
-				case TFClass_DemoMan:	iClass = 4;
-				case TFClass_Heavy:		iClass = 5;
-				case TFClass_Engineer:	iClass = 6;
-				case TFClass_Medic:		iClass = 7;
-				case TFClass_Sniper:	iClass = 8;
-				case TFClass_Spy:		iClass = 9;
-			}
-			
-			if (iClass != g_iClass)
-			{
-				switch (g_iClass)
-				{
-					case 1: 	TF2_SetPlayerClass(client, TFClass_Scout);
-					case 2: 	TF2_SetPlayerClass(client, TFClass_Soldier);
-					case 3: 	TF2_SetPlayerClass(client, TFClass_Pyro);
-					case 4: 	TF2_SetPlayerClass(client, TFClass_DemoMan);
-					case 5: 	TF2_SetPlayerClass(client, TFClass_Heavy);
-					case 6: 	TF2_SetPlayerClass(client, TFClass_Engineer);
-					case 7: 	TF2_SetPlayerClass(client, TFClass_Medic);
-					case 8: 	TF2_SetPlayerClass(client, TFClass_Sniper);
-					case 9: 	TF2_SetPlayerClass(client, TFClass_Spy);
-					default: 	TF2_SetPlayerClass(client, TFClass_Scout);
-				}
-				
+				TF2_SetPlayerClass(client, g_warClass);
 				TF2_RespawnPlayer(client);
 				PrintModMessage(client);
 			}
