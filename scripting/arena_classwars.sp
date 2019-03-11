@@ -1,8 +1,9 @@
 #include <sourcemod>
 #include <tf2_stocks>
 
-TFClassType g_warClass;
-
+TFClassType
+	g_warClass;
+	
 public Plugin myinfo = 
 {
 	name = "Class Warfare: Arena",
@@ -32,8 +33,8 @@ public Action Event_RoundActuallyStart(Handle hEvent, const char[] sEventName, b
 		{
 			if (TF2_GetClientTeam(iClient) == TFTeam_Red)
 			{
-				PrintModMessage(iClient);
-				VerifySelection(iClient);
+				Client_PrintModMessage(iClient);
+				Client_VerifySelection(iClient);
 			}
 		}
 	}
@@ -42,10 +43,10 @@ public Action Event_RoundActuallyStart(Handle hEvent, const char[] sEventName, b
 public Action Event_PlayerSpawn(Handle hEvent, const char[] sEventName, bool bDontBroadcast)
 {
 	int iClient = GetClientOfUserId(GetEventInt(hEvent, "userid"));
-	VerifySelection(iClient);
+	Client_VerifySelection(iClient);
 }
 
-void PrintModMessage(int iClient)
+void Client_PrintModMessage(int iClient)
 {
 	if (IsValidClient(iClient))
 	{
@@ -69,29 +70,29 @@ void PrintModMessage(int iClient)
 	}
 }
 
-void VerifySelection(int client)
+void Client_VerifySelection(int iClient)
 {
-	if (IsValidClient(client))
+	if (IsValidClient(iClient))
 	{
-		if (GetClientTeam(client) == view_as<int>(TFTeam_Red))
+		if (GetClientTeam(iClient) == view_as<int>(TFTeam_Red))
 		{
-			TFClassType clientClass = TF2_GetPlayerClass(client);
+			TFClassType clientClass = TF2_GetPlayerClass(iClient);
 			
 			if (clientClass != g_warClass)
 			{
-				TF2_SetPlayerClass(client, g_warClass);
-				TF2_RespawnPlayer(client);
-				PrintModMessage(client);
+				TF2_SetPlayerClass(iClient, g_warClass);
+				TF2_RespawnPlayer(iClient);
+				Client_PrintModMessage(iClient);
 			}
 		}
 	}
 }
 
-stock bool IsValidClient(int client, bool bReplay = true)
+stock bool IsValidClient(int iClient, bool bReplay = true)
 {
-	if (client <= 0 || client > MaxClients || !IsClientInGame(client))
+	if (iClient <= 0 || iClient > MaxClients || !IsClientInGame(iClient))
 		return false;
-	if (bReplay && (IsClientSourceTV(client) || IsClientReplay(client)))
+	if (bReplay && (IsClientSourceTV(iClient) || IsClientReplay(iClient)))
 		return false;
 	return true;
 }
