@@ -7,7 +7,7 @@ public Plugin myinfo =
 {
 	name = "Class Warfare: Arena",
 	author = "myst",
-	description = "Class Warfare made for Arena gamemodes, built for Deathrun, Vs Saxton Hale and Freak Fortress",
+	description = "Class Warfare made for Arena gamemodes, built for Deathrun, Vs Saxton Hale, Freak Fortress and Prop Hunt",
 	version = "1.0",
 	url = "https://titan.tf"
 }
