@@ -1,8 +1,7 @@
-#include <sourcemod>
 #include <tf2_stocks>
 
 TFClassType
-	g_warClass;
+	g_TFClass;
 	
 public Plugin myinfo = 
 {
@@ -22,7 +21,7 @@ public void OnPluginStart()
 
 public Action Event_RoundStart(Handle hEvent, const char[] sEventName, bool bDontBroadcast) 
 {
-	g_warClass = view_as<TFClassType>(GetRandomInt(1, 9));
+	g_TFClass = view_as<TFClassType>(GetRandomInt(1, 9));
 }
 
 public Action Event_RoundActuallyStart(Handle hEvent, const char[] sEventName, bool bDontBroadcast) 
@@ -51,8 +50,7 @@ void Client_PrintModMessage(int iClient)
 	if (IsValidClient(iClient))
 	{
 		char sClass[20];
-		
-		switch (g_warClass)
+		switch (g_TFClass)
 		{
 			case TFClass_Scout: 		sClass = "Scout";
 			case TFClass_Soldier:		sClass = "Soldier";
@@ -76,11 +74,10 @@ void Client_VerifySelection(int iClient)
 	{
 		if (GetClientTeam(iClient) == view_as<int>(TFTeam_Red))
 		{
-			TFClassType clientClass = TF2_GetPlayerClass(iClient);
-			
-			if (clientClass != g_warClass)
+			TFClassType TFClass = TF2_GetPlayerClass(iClient);
+			if (TFClass != g_TFClass)
 			{
-				TF2_SetPlayerClass(iClient, g_warClass);
+				TF2_SetPlayerClass(iClient, g_TFClass);
 				TF2_RespawnPlayer(iClient);
 				Client_PrintModMessage(iClient);
 			}
