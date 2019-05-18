@@ -22,9 +22,21 @@ public void OnPluginStart()
 public Action Event_RoundStart(Handle hEvent, const char[] sEventName, bool bDontBroadcast) 
 {
 	g_TFClass = view_as<TFClassType>(GetRandomInt(1, 9));
+	UpdateClasses();
 }
 
 public Action Event_RoundActuallyStart(Handle hEvent, const char[] sEventName, bool bDontBroadcast) 
+{
+	UpdateClasses();
+}
+
+public Action Event_PlayerSpawn(Handle hEvent, const char[] sEventName, bool bDontBroadcast)
+{
+	int iClient = GetClientOfUserId(GetEventInt(hEvent, "userid"));
+	Client_VerifySelection(iClient);
+}
+
+public void UpdateClasses()
 {
 	for (int iClient = 1; iClient <= MaxClients; iClient++) 
 	{
@@ -39,13 +51,7 @@ public Action Event_RoundActuallyStart(Handle hEvent, const char[] sEventName, b
 	}
 }
 
-public Action Event_PlayerSpawn(Handle hEvent, const char[] sEventName, bool bDontBroadcast)
-{
-	int iClient = GetClientOfUserId(GetEventInt(hEvent, "userid"));
-	Client_VerifySelection(iClient);
-}
-
-void Client_PrintModMessage(int iClient)
+public void Client_PrintModMessage(int iClient)
 {
 	if (IsValidClient(iClient))
 	{
@@ -68,7 +74,7 @@ void Client_PrintModMessage(int iClient)
 	}
 }
 
-void Client_VerifySelection(int iClient)
+public void Client_VerifySelection(int iClient)
 {
 	if (IsValidClient(iClient))
 	{
